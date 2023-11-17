@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Product.Api.Extensions;
 using Product.DataTypes.Models;
 using Product.DataTypes.Response;
 using System.IdentityModel.Tokens.Jwt;
@@ -8,6 +10,7 @@ using System.Text;
 
 namespace Product.Api.Controllers
 {
+    [EnableCors("AllowOrigin")]
     [Route("api/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase

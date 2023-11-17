@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Product.Api.Mapper;
@@ -10,31 +11,32 @@ using Product.Services.Services;
 namespace Product.Api.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
+    [EnableCors("AllowOrigin")]
     [ApiController]
+    [Authorize]
     public class ProductController : ControllerBase
     {
-        private ProductService productService { get; set; }
+        private IProductService _productService { get; set; }
 
         private ILogger _logger { get; set; }
 
         private IMapper _mapper { get; set; }
-        public ProductController(ProductContext context, IMapper mapper , ILogger<ProductController> logger)
+        public ProductController(IProductService productService, IMapper mapper, ILogger<ProductController> logger)
         {
-            productService = new ProductService(context);
+            _productService = productService;
             _mapper = mapper;
             _logger = logger;
         }
 
 
         [HttpGet]
-        [ProducesResponseType(200,Type= typeof(List<ProductModel>))]
+        [ProducesResponseType(200, Type = typeof(List<ProductModel>))]
         public async Task<IActionResult> Get()
         {
             List<ProductModel> products = new List<ProductModel>();
             try
             {
-                products = await this.productService.GetAllProductsAsync();
+                products = await this._productService.GetAllProductsAsync();
             }
             catch (Exception ex)
             {
@@ -47,12 +49,12 @@ namespace Product.Api.Controllers
 
         [HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(ProductModel))]
-        public async Task<IActionResult> GetProductById( string id)
+        public async Task<IActionResult> GetProductById(string id)
         {
-            var product = await this.productService.GetProductById(id);
+            var product = await this._productService.GetProductById(id);
 
-            if(product == null) 
-            { 
+            if (product == null)
+            {
                 return NotFound();
             }
 
@@ -65,31 +67,31 @@ namespace Product.Api.Controllers
         {
             var mapped = _mapper.Map<ProductModel>(addDto);
 
-            var result = await this.productService.AddProductAsync(mapped);
+            var result = await this._productService.AddProductAsync(mapped);
 
             return Ok(result);
         }
 
         [HttpPut]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> EditProduct([FromBody] ProductModelEditDto editDto, [FromQuery]string id)
+        public async Task<IActionResult> EditProduct([FromBody] ProductModelEditDto editDto, [FromQuery] string id)
         {
-            if(editDto.Id.ToString().ToLower() != id.ToLower())
+            if (editDto.Id.ToString().ToLower() != id.ToLower())
             {
-                return BadRequest();    
+                return BadRequest();
             }
-            var product = await this.productService.GetProductById(id);
+            var product = await this._productService.GetProductById(id);
 
-            if(product == null)
+            if (product == null)
             {
                 return NotFound();
             }
 
             var mapped = _mapper.Map<ProductModel>(editDto);
-            
-            var resultModified = await this.productService.EditProductAsync(mapped);
 
-            if(resultModified == null)
+            var resultModified = await this._productService.EditProductAsync(mapped);
+
+            if (resultModified == null)
             {
                 return BadRequest(resultModified);
             }
@@ -100,14 +102,14 @@ namespace Product.Api.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteProduct([FromQuery] string id)
         {
-            var product = await this.productService.GetProductById(id);
+            var product = await this._productService.GetProductById(id);
 
-            if(product == null)
+            if (product == null)
             {
                 return NotFound();
             }
 
-            var isDeleted = await this.productService.DeleteProductAsync(id);
+            var isDeleted = await this._productService.DeleteProductAsync(id);
 
             if (!isDeleted)
             {

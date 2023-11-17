@@ -4,41 +4,41 @@ using Product.DataTypes.Models;
 
 namespace Product.Services.Services
 {
-    public class ProductService
+    public class ProductService : IProductService
     {
-        private ProductRepository productRepository { get; set; }
-        public ProductService(ProductContext context)
+        private IProductRepository _productRepository { get; set; }
+        public ProductService(IProductRepository productRepository)
         {
-            productRepository = new ProductRepository(context);
+            _productRepository = productRepository;
         }
 
         public async Task<List<ProductModel>> GetAllProductsAsync()
         {
-            return await productRepository.GetAllProducts();
+            return await _productRepository.GetAllProducts();
         }
 
         public async Task<ProductModel> GetProductById(string id)
         {
-            return await productRepository.GetProductById(id);
+            return await _productRepository.GetProductById(id);
         }
 
         public async Task<ProductModel> AddProductAsync(ProductModel product)
         {
-            var result = await productRepository.AddProduct(product);
+            var result = await _productRepository.AddProduct(product);
 
             return result;
         }
 
         public async Task<bool> DeleteProductAsync(string id)
         {
-            var result = await productRepository.DeleteProduct(id);
+            var result = await _productRepository.DeleteProduct(id);
 
             return result;
         }
 
         public async Task<ProductModel> EditProductAsync(ProductModel product)
         {
-            var result = await productRepository.EditProduct(product);
+            var result = await _productRepository.EditProduct(product);
 
             return result;
         }
@@ -46,7 +46,7 @@ namespace Product.Services.Services
 
         public async Task<ProductModel> AddProductRatingsAsync(ProductModel product)
         {
-            var result = await productRepository.AddProductRatings(product);
+            var result = await _productRepository.AddProductRatings(product);
 
             return result;
         }

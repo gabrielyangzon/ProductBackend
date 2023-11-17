@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Product.DataAccess.Repositories
 {
-    public class ProductRepository
+    public class ProductRepository : IProductRepository
     {
         private readonly ProductContext _context;
         public ProductRepository(ProductContext context)
@@ -49,7 +49,7 @@ namespace Product.DataAccess.Repositories
                 await _context.SaveChangesAsync();
                 return true;
             }
-            
+
             return false;
         }
 
@@ -64,7 +64,8 @@ namespace Product.DataAccess.Repositories
 
                 return product;
 
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }
