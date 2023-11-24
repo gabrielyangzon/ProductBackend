@@ -8,9 +8,9 @@ namespace Product.Api.Mapper
 
         public AutoMapperProfile()
         {
-            CreateMap<ProductModelAddDto, ProductModel>();
+            CreateMap<ProductModelAddDto, ProductModel>().ReverseMap();
+            CreateMap<ProductModelEditDto, ProductModel>().ReverseMap();
 
-            CreateMap<ProductModelEditDto, ProductModel>(); 
         }
     }
 }

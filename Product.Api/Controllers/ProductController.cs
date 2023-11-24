@@ -31,7 +31,7 @@ namespace Product.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(List<ProductModel>))]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAllProduct()
         {
             List<ProductModel> products = new List<ProductModel>();
             try
@@ -80,12 +80,7 @@ namespace Product.Api.Controllers
             {
                 return BadRequest();
             }
-            var product = await this._productService.GetProductById(id);
 
-            if (product == null)
-            {
-                return NotFound();
-            }
 
             var mapped = _mapper.Map<ProductModel>(editDto);
 

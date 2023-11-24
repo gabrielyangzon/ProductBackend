@@ -38,6 +38,14 @@ namespace Product.Services.Services
 
         public async Task<ProductModel> EditProductAsync(ProductModel product)
         {
+            var isExist = await _productRepository.GetProductById(product.Id.ToString());
+
+
+            if (isExist == null)
+            {
+                return null;
+            }
+
             var result = await _productRepository.EditProduct(product);
 
             return result;
